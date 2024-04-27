@@ -1,5 +1,6 @@
 import  express from 'express';
 import mongoose from 'mongoose';
+import cors from 'cors';
 import path from 'path';
 import  routes from './routes';
 
@@ -14,7 +15,7 @@ class App{
     }
 
     middlewares(){
-
+        this.server.use(cors());//cors é para liberar o acesso para quem pode fazer requisição na nossa api. Podemos liberar somente para um em especifico
         this.server.use(
             '/files',
             express.static(path.resolve(__dirname, '..', 'uploads'))
