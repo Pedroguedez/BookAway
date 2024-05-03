@@ -3,6 +3,19 @@ import User from "../models/User";
 import House from "../models/House";
 
 class ReserveController {
+
+    async index(req, res){
+        const { user_id } = req.headers;
+        try {
+            const reserves = await Reserve.find({ user: user_id}).populate('house');
+
+           
+            return res.json(reserves)
+
+        }catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
+    } 
     async store(req, res) {
         const { user_id } = req.headers;
         const { house_id } = req.params;
@@ -16,7 +29,7 @@ class ReserveController {
             return res.status(400).json({ error:'Solicitação indisponivel.'});
         }
 
-        const user = await Reserve.findById(user_id);
+        const user = await User.findById(user_id);
         if(String(user._id) === String(house.user)){
             return res.status(401).json({ error:'Reserva não permitida.'});
         }
@@ -38,6 +51,14 @@ class ReserveController {
         }
     }
 
+
+    async destroy(req,res){
+        const { reserve_id } = req.body;
+
+        await Reserve.findByIdAndDelete({ _id: reserve_id});
+
+        return res.json({ ok: "Excluido com sucesso"})
+    }
 }
 
 export default new ReserveController();
