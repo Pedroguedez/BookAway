@@ -26,18 +26,18 @@ class HouseController {
 
         if (!(await schema.isValid(req.body))) {
             return res.status(400).json({ error: 'Falha na validação.' })
-        } else {
-
-            const house = await House.create({
-                user: user_id,
-                thumbnail: filename,
-                descripton,
-                price,
-                location,
-                status,
-            });
-            return res.json(house);
         }
+
+        const house = await House.create({
+            user: user_id,
+            thumbnail: filename,
+            descripton,
+            price,
+            location,
+            status,
+        });
+        return res.json(house);
+
     }
 
     async update(req, res) {
@@ -55,26 +55,24 @@ class HouseController {
 
         if (!(await schema.isValid(req.body))) {
             return res.status(400).json({ error: 'Falha na validação.' })
-        } else {
-
-
-            const user = await User.findById(user_id);
-            const houses = await House.findById(house_id);
-
-
-            if (String(user._id) !== String(houses.user)) {
-                return res.status(401).json({ error: 'Não Autorizado' })
-            }
-            await House.updateOne({ _id: house_id }, {
-                user: user_id,
-                thumbnail: filename,
-                descripton,
-                price,
-                location,
-                status,
-            });
-            return res.send();
         }
+
+        const user = await User.findById(user_id);
+        const houses = await House.findById(house_id);
+
+        if (String(user._id) !== String(houses.user)) {
+            return res.status(401).json({ error: 'Não Autorizado' })
+        }
+        await House.updateOne({ _id: house_id }, {
+            user: user_id,
+            thumbnail: filename,
+            descripton,
+            price,
+            location,
+            status,
+        });
+        return res.send();
+
     }
 
     async destroy(req, res) {
